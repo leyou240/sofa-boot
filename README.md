@@ -1,14 +1,11 @@
 ## SOFABoot
 
-[![Build Status](https://travis-ci.org/alipay/sofa-boot.svg?branch=master)](https://travis-ci.org/alipay/sofa-boot)
-[![Coverage Status](https://coveralls.io/repos/github/alipay/sofa-boot/badge.svg?branch=master)](https://coveralls.io/github/alipay/sofa-boot?branch=master)
+[![Build Status](https://travis-ci.com/sofastack/sofa-boot.svg?branch=master)](https://travis-ci.com/sofastack/sofa-boot)
+[![Coverage Status](https://codecov.io/gh/sofastack/sofa-boot/branch/master/graph/badge.svg)](https://codecov.io/gh/sofastack/sofa-boot/branch/master)
 ![license](https://img.shields.io/badge/license-Apache--2.0-green.svg)
-![maven](https://img.shields.io/github/release/alipay/sofa-boot.svg)
+![maven](https://img.shields.io/github/release/sofastack/sofa-boot.svg)
 
 SOFABoot 是蚂蚁金服开源的基于 Spring Boot 的研发框架，它在 Spring Boot 的基础上，提供了诸如 Readiness Check，类隔离，日志空间隔离等等能力。在增强了 Spring Boot 的同时，SOFABoot 提供了让用户可以在 Spring Boot 中非常方便地使用 SOFA 中间件的能力。
-
-## 3.0.0 SNAPSHOT ! 🎉🎉🎉
-为了方便社区同学能够基于 SOFABoot 使用 Spring Boot 2.0 进行开发，我们拉了 3.0.0-SNAPSHOT 快照分支，该版本是基于 Spring Boot 2.0.3.RELEASE。
 
 ## 一、背景
 
@@ -63,13 +60,17 @@ SOFA 的第一个版本是阿玺创造的，感谢阿玺给 SOFA 打下了坚实
 
 ## 六、示例
 
-在此工程的 `sofaboot-samples` 目录下的是 SOFABoot 的示例工程，分别为：
-
-* [SOFABoot 示例工程](./sofaboot-samples/sofaboot-sample)
-* [SOFABoot 示例工程（包含类隔离能力）](./sofaboot-samples/sofaboot-sample-with-isolation)
-* [SOFABoot 示例工程（包含模块化开发能力）](./sofaboot-samples/sofaboot-sample-with-isle)
-* [SOFABoot 示例工程（使用 SOFARPC）](./sofaboot-samples/sofaboot-sample-with-rpc)
+SOFABoot 的示例工程 [sofaboot-samples](https://github.com/sofastack-guides/sofa-boot-guides/tree/master) 包含以下 demo 项目：
+* [SOFABoot 示例工程](https://github.com/sofastack-guides/sofa-boot-guides/tree/master/sofaboot-sample)
+* [SOFABoot 示例工程（包含类隔离能力）](https://github.com/sofastack-guides/sofa-boot-guides/blob/master/sofaboot-sample-with-isolation)
+* [SOFABoot 示例工程（包含模块化开发能力）](https://github.com/sofastack-guides/sofa-boot-guides/blob/master/sofaboot-sample-with-isle)
+* [SOFABoot 示例工程（使用 SOFARPC）](https://github.com/sofastack-guides/sofa-boot-guides/blob/master/sofaboot-sample-with-rpc)
+* [SOFABoot 示例工程（使用定时任务）](https://github.com/sofastack-guides/sofa-boot-guides/blob/master/sofaboot-scheduler-batch-sample)
  
 ## 七、文档
 
 请参考 [SOFABoot 官方文档](http://www.sofastack.tech/sofa-boot/docs/Home)。
+
+## 八、开源许可
+
+SOFABoot 基于 Apache License 2.0 协议，SOFABoot 依赖了一些三方组件，它们的开源协议参见 [依赖组件版权说明](https://www.sofastack.tech/projects/sofa-boot/notice/)
