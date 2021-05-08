@@ -19,11 +19,11 @@ package com.alipay.sofa.startup.test.beans;
 import org.springframework.beans.factory.InitializingBean;
 
 /**
- * @author: Zhijie
- * @since: 2020/7/13
+ * @author Zhijie
+ * @since 2020/7/13
  */
 public class InitCostBean implements InitializingBean {
-    public static final long INIT_COST_TIME = 1000L;
+    public static final long INIT_COST_TIME = 120L;
 
     @Override
     public void afterPropertiesSet() throws Exception {

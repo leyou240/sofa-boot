@@ -16,7 +16,6 @@
  */
 package com.alipay.sofa.runtime.component.impl;
 
-import com.alipay.sofa.boot.startup.CommonStartupCost;
 import com.alipay.sofa.runtime.api.ServiceRuntimeException;
 import com.alipay.sofa.runtime.api.component.ComponentName;
 import com.alipay.sofa.runtime.log.SofaLogger;
@@ -25,10 +24,16 @@ import com.alipay.sofa.runtime.model.ComponentType;
 import com.alipay.sofa.runtime.spi.client.ClientFactoryInternal;
 import com.alipay.sofa.runtime.spi.component.ComponentInfo;
 import com.alipay.sofa.runtime.spi.component.ComponentManager;
+import com.alipay.sofa.runtime.spring.SpringContextComponent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 
 /**
  * @author xuanbei 18/3/9
@@ -41,7 +46,6 @@ public class ComponentManagerImpl implements ComponentManager {
     protected ConcurrentMap<ComponentType, Map<ComponentName, ComponentInfo>> resolvedRegistry;
     /** client factory */
     private ClientFactoryInternal                                             clientFactoryInternal;
-    private List<CommonStartupCost>                                           componentCostList = new ArrayList<>();
 
     public ComponentManagerImpl(ClientFactoryInternal clientFactoryInternal) {
         this.registry = new ConcurrentHashMap(16);
@@ -84,7 +88,23 @@ public class ComponentManagerImpl implements ComponentManager {
     @Override
     public void shutdown() {
         List<ComponentInfo> elems = new ArrayList<>(registry.values());
+        // shutdown spring contexts first
+        List<ComponentInfo> springContextComponents = elems.stream()
+                .filter(componentInfo -> componentInfo instanceof SpringContextComponent).collect(Collectors.toList());
 
+        for (ComponentInfo ri : springContextComponents) {
+            try {
+                unregister(ri);
+            } catch (Throwable t) {
+                SofaLogger.error("failed to shutdown component manager", t);
+            }
+        }
+
+        if (!springContextComponents.isEmpty()) {
+            elems.removeAll(springContextComponents);
+        }
+
+        // shutdown remaining components
         for (ComponentInfo ri : elems) {
             try {
                 unregister(ri);
@@ -94,10 +114,12 @@ public class ComponentManagerImpl implements ComponentManager {
         }
 
         try {
-            registry.clear();
-            registry = null;
-            resolvedRegistry.clear();
-            resolvedRegistry = null;
+            if (registry != null) {
+                registry.clear();
+            }
+            if (resolvedRegistry != null) {
+                resolvedRegistry.clear();
+            }
             clientFactoryInternal = null;
         } catch (Throwable t) {
             SofaLogger.error("Failed to shutdown registry manager", t);
@@ -125,9 +147,6 @@ public class ComponentManagerImpl implements ComponentManager {
 
     private ComponentInfo doRegister(ComponentInfo ci) {
         ComponentName name = ci.getName();
-        CommonStartupCost commonStartupCost = new CommonStartupCost();
-        commonStartupCost.setName(name.getRawName());
-        commonStartupCost.setBeginTime(System.currentTimeMillis());
         if (isRegistered(name)) {
             SofaLogger.error("Component was already registered: {}", name);
             if (ci.canBeDuplicate()) {
@@ -164,8 +183,6 @@ public class ComponentManagerImpl implements ComponentManager {
             ci.exception(new Exception(t));
             SofaLogger.error("Failed to create the component {}", ci.getName(), t);
         }
-        commonStartupCost.setEndTime(System.currentTimeMillis());
-        componentCostList.add(commonStartupCost);
 
         return ci;
     }
@@ -213,11 +230,6 @@ public class ComponentManagerImpl implements ComponentManager {
                 SofaLogger.error("Failed to create the component {}.", componentInfo.getName(), t);
             }
         }
-    }
-
-    @Override
-    public List<CommonStartupCost> getComponentCostList() {
-        return componentCostList;
     }
 
     private void typeRegistry(ComponentInfo componentInfo) {

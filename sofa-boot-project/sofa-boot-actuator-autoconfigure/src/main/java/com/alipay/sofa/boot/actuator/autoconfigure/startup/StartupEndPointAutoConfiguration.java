@@ -17,24 +17,27 @@
 package com.alipay.sofa.boot.actuator.autoconfigure.startup;
 
 import com.alipay.sofa.boot.actuator.startup.SofaBootStartupEndPoint;
-import com.alipay.sofa.startup.SofaStartupContext;
-import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnEnabledEndpoint;
+import com.alipay.sofa.boot.autoconfigure.startup.SofaStartupAutoConfiguration;
+import com.alipay.sofa.startup.StartupReporter;
+import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnAvailableEndpoint;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * @author: Zhijie
- * @since: 2020/7/7
+ * @author Zhijie
+ * @since 2020/7/7
  */
 @Configuration
-@ConditionalOnClass(SofaStartupContext.class)
+@ConditionalOnClass(StartupReporter.class)
+@AutoConfigureBefore(SofaStartupAutoConfiguration.class)
 public class StartupEndPointAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnEnabledEndpoint(endpoint = SofaBootStartupEndPoint.class)
+    @ConditionalOnAvailableEndpoint(endpoint = SofaBootStartupEndPoint.class)
     public SofaBootStartupEndPoint sofaBootStartupEndPoint() {
         return new SofaBootStartupEndPoint();
     }
